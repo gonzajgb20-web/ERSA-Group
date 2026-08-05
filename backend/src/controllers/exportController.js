@@ -12,13 +12,13 @@ async function exportExcel(req, res) {
         COALESCE(h.mecanicos, 'Sin Registrar') AS mecanicos
       FROM internos i
       LEFT JOIN (
-        SELECT hc1.*
-        FROM historial_cambios hc1
-        INNER JOIN (
-          SELECT interno_id, MAX(fecha_cambio) as max_fecha, MAX(id) as max_id
-          FROM historial_cambios
-          GROUP BY interno_id
-        ) hc2 ON hc1.interno_id = hc2.interno_id AND hc1.id = hc2.max_id
+        SELECT DISTINCT ON (interno_id) 
+          interno_id, 
+          fecha_cambio, 
+          kilometraje, 
+          mecanicos
+        FROM historial_cambios
+        ORDER BY interno_id, fecha_cambio DESC, creado_en DESC
       ) h ON i.id = h.interno_id
       ORDER BY 
         CASE WHEN i.numero_interno ~ '^[0-9]+$' THEN i.numero_interno::INTEGER ELSE 999999 END ASC,

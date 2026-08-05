@@ -3,6 +3,7 @@ const db = require('../config/db');
 // Obtener todos los internos ordenados por Prioridad de Mantenimiento
 async function getInternos(req, res) {
   try {
+    // Uso de DISTINCT ON (interno_id) compatible 100% con PostgreSQL y tipos UUID
     const query = `
       SELECT 
         i.id,
@@ -15,13 +16,13 @@ async function getInternos(req, res) {
         h.mecanicos AS ultimo_mecanicos
       FROM internos i
       LEFT JOIN (
-        SELECT hc1.*
-        FROM historial_cambios hc1
-        INNER JOIN (
-          SELECT interno_id, MAX(fecha_cambio) as max_fecha, MAX(id) as max_id
-          FROM historial_cambios
-          GROUP BY interno_id
-        ) hc2 ON hc1.interno_id = hc2.interno_id AND hc1.id = hc2.max_id
+        SELECT DISTINCT ON (interno_id) 
+          interno_id, 
+          fecha_cambio, 
+          kilometraje, 
+          mecanicos
+        FROM historial_cambios
+        ORDER BY interno_id, fecha_cambio DESC, creado_en DESC
       ) h ON i.id = h.interno_id
       ORDER BY 
         CASE WHEN h.fecha_cambio IS NULL THEN 0 ELSE 1 END ASC,
@@ -41,7 +42,7 @@ async function getInternos(req, res) {
     console.error('Error al consultar internos en PostgreSQL:', err.message);
     return res.status(500).json({ 
       success: false, 
-      error: `Error al consultar la base de datos Supabase: ${err.message}. Verifique que el script schema.sql haya sido ejecutado en el Editor SQL de Supabase.` 
+      error: `Error en la consulta de PostgreSQL: ${err.message}` 
     });
   }
 }
