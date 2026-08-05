@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation } from 'react.router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Download, Settings, ArrowLeft, LogOut } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
