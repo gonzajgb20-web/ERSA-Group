@@ -49,11 +49,16 @@ export const CambioAceiteModal: React.FC<CambioAceiteModalProps> = ({
   };
 
   return (
-    <div className={`modal-overlay ${isOpen ? 'active' : ''}`}>
-      <div className="modal-card-large">
+    <div
+      className="modal-overlay"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div className="modal-card-large" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header-subtle">
           <h3 className="modal-title-text">Registrar Cambio de Aceite</h3>
-          <button className="btn-cerrar-modal" onClick={onClose} aria-label="Cerrar ventana">
+          <button type="button" className="btn-cerrar-modal" onClick={onClose} aria-label="Cerrar ventana">
             <X size={20} />
           </button>
         </div>

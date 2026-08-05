@@ -366,6 +366,129 @@ body {
   color: var(--badge-danger-text);
 }
 
+/* Ventanas Modales Garantizadas */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  padding: 1rem;
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-card-large {
+  background: #ffffff;
+  border-radius: var(--radius-md);
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 20px 30px -5px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal-header-subtle {
+  background: var(--color-card-subtle);
+  padding: 1.15rem 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-title-text {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+.btn-cerrar-modal {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 1.5rem;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+}
+
+.btn-cerrar-modal:hover {
+  background: var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.modal-form-body {
+  padding: 1.5rem;
+}
+
+.form-group-large {
+  margin-bottom: 1.15rem;
+}
+
+.label-large {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 0.35rem;
+}
+
+.input-large {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  background: var(--color-card-subtle);
+}
+
+.input-large:focus {
+  outline: none;
+  background: #ffffff;
+  border-color: var(--color-ersa-red);
+  box-shadow: 0 0 0 3px rgba(201, 26, 37, 0.1);
+}
+
+.ayuda-texto {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin-top: 0.3rem;
+}
+
+.modal-footer-btns {
+  padding: 1rem 1.5rem;
+  background: var(--color-card-subtle);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
 /* Configuración & Tabla Optimizado para Móviles */
 .config-card {
   background: var(--color-card-bg);
@@ -507,12 +630,10 @@ body {
     font-size: 0.825rem;
   }
 
-  /* Mostrar la Marca como etiqueta debajo del número en celulares */
   .sublabel-marca-mobile {
     display: block;
   }
 
-  /* Ocultar la columna dedicada de Marca en pantallas pequeñas para que entre todo */
   .col-marca-desktop {
     display: none;
   }

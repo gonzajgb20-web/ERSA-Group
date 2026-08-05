@@ -92,9 +92,13 @@ export const InternoCard: React.FC<InternoCardProps> = ({ interno, onOpenModal }
 
       <div>
         <button
+          type="button"
           className="btn btn-primary"
-          style={{ width: '100%' }}
-          onClick={() => onOpenModal(interno)}
+          style={{ width: '100%', cursor: 'pointer' }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onOpenModal(interno);
+          }}
         >
           <Edit size={16} />
           Registrar Cambio de Aceite
