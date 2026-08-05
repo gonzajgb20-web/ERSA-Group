@@ -26,7 +26,8 @@ async function getInternos(req, res) {
       ORDER BY 
         CASE WHEN h.fecha_cambio IS NULL THEN 0 ELSE 1 END ASC,
         h.fecha_cambio ASC,
-        CAST(REGEXP_REPLACE(i.numero_interno, '\\D', '', 'g') AS INTEGER) ASC;
+        CASE WHEN i.numero_interno ~ '^[0-9]+$' THEN i.numero_interno::INTEGER ELSE 999999 END ASC,
+        i.numero_interno ASC;
     `;
 
     const result = await db.query(query);
@@ -37,8 +38,11 @@ async function getInternos(req, res) {
     });
 
   } catch (err) {
-    console.error('Error al consultar internos:', err);
-    return res.status(500).json({ success: false, error: 'Error de servidor al consultar los colectivos.' });
+    console.error('Error al consultar internos en PostgreSQL:', err.message);
+    return res.status(500).json({ 
+      success: false, 
+      error: `Error al consultar la base de datos Supabase: ${err.message}. Verifique que el script schema.sql haya sido ejecutado en el Editor SQL de Supabase.` 
+    });
   }
 }
 
@@ -54,7 +58,6 @@ async function createInterno(req, res) {
   }
 
   try {
-    // Verificar duplicados
     const checkResult = await db.query('SELECT id FROM internos WHERE numero_interno = $1', [numTrimmed]);
     if (checkResult.rows.length > 0) {
       return res.status(400).json({ success: false, error: `El Interno N° ${numTrimmed} ya existe en el sistema.` });
@@ -73,7 +76,7 @@ async function createInterno(req, res) {
 
   } catch (err) {
     console.error('Error al crear interno:', err);
-    return res.status(500).json({ success: false, error: 'Error de base de datos al agregar el colectivo.' });
+    return res.status(500).json({ success: false, error: 'Error de base de datos al agregar el colectivo: ' + err.message });
   }
 }
 
@@ -98,7 +101,7 @@ async function deleteInterno(req, res) {
 
   } catch (err) {
     console.error('Error al eliminar interno:', err);
-    return res.status(500).json({ success: false, error: 'Error al eliminar el colectivo.' });
+    return res.status(500).json({ success: false, error: 'Error al eliminar el colectivo: ' + err.message });
   }
 }
 

@@ -20,7 +20,9 @@ async function exportExcel(req, res) {
           GROUP BY interno_id
         ) hc2 ON hc1.interno_id = hc2.interno_id AND hc1.id = hc2.max_id
       ) h ON i.id = h.interno_id
-      ORDER BY CAST(REGEXP_REPLACE(i.numero_interno, '\\D', '', 'g') AS INTEGER) ASC;
+      ORDER BY 
+        CASE WHEN i.numero_interno ~ '^[0-9]+$' THEN i.numero_interno::INTEGER ELSE 999999 END ASC,
+        i.numero_interno ASC;
     `;
 
     const result = await db.query(query);
@@ -75,7 +77,6 @@ async function exportExcel(req, res) {
       };
     });
 
-    // Anchos de columnas
     worksheet.getColumn('A').width = 4;
     worksheet.getColumn('B').width = 16;
     worksheet.getColumn('C').width = 22;
@@ -83,7 +84,6 @@ async function exportExcel(req, res) {
     worksheet.getColumn('E').width = 22;
     worksheet.getColumn('F').width = 28;
 
-    // Filas de Datos
     let rowIndex = 5;
     registros.forEach(row => {
       const dataRow = worksheet.getRow(rowIndex);
@@ -105,7 +105,6 @@ async function exportExcel(req, res) {
         cell.alignment = { vertical: 'middle', horizontal: (colLetter === 'C' || colLetter === 'F') ? 'left' : 'center' };
       });
 
-      // Poner en negrita la columna B (Interno)
       worksheet.getCell(`B${rowIndex}`).font = { name: 'Calibri', size: 11, bold: true };
       dataRow.height = 22;
       rowIndex++;
