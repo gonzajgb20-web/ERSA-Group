@@ -24,6 +24,16 @@ app.use(express.urlencoded({ extended: true }));
 // Servir estáticos de imágenes subidas
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
+// Root endpoint de bienvenida
+app.get('/', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Servidor API REST de ERSA Group funcionando correctamente',
+    healthcheck: '/api/health',
+    endpoints: ['/api/internos', '/api/cambios', '/api/auth', '/api/exportar/excel']
+  });
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', service: 'ERSA Group Fleet API', timestamp: new Date().toISOString() });
